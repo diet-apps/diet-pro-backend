@@ -1,0 +1,6 @@
+@Diet.Pro.AI_HostAddress = http://localhost:5128
+
+GET {{Diet.Pro.AI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
