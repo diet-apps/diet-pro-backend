@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Diet.Pro.AI.Controllers
+namespace Diet.Pro.AI.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

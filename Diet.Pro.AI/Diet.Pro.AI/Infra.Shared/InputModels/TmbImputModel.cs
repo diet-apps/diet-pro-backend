@@ -1,4 +1,4 @@
-﻿namespace Diet.Pro.AI.InputModels
+﻿namespace Diet.Pro.AI.Infra.Shared.InputModels
 {
     public class TmbImputModel
     {

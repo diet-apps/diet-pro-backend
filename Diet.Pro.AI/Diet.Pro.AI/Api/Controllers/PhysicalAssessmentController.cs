@@ -1,7 +1,7 @@
-﻿using Diet.Pro.AI.InputModels;
+﻿using Diet.Pro.AI.Infra.Shared.InputModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Diet.Pro.AI.Controllers
+namespace Diet.Pro.AI.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,9 +17,9 @@ namespace Diet.Pro.AI.Controllers
             // Cálculo da TMB (Mifflin-St Jeor)
             double tmb;
             if (req.Sexo.ToLower() == "masculino")
-                tmb = (10 * req.Peso) + (6.25 * req.Altura) - (5 * req.Idade) + 5;
+                tmb = 10 * req.Peso + 6.25 * req.Altura - 5 * req.Idade + 5;
             else
-                tmb = (10 * req.Peso) + (6.25 * req.Altura) - (5 * req.Idade) - 161;
+                tmb = 10 * req.Peso + 6.25 * req.Altura - 5 * req.Idade - 161;
 
             // Fator de atividade física
             var fatores = new Dictionary<string, double>
@@ -39,7 +39,7 @@ namespace Diet.Pro.AI.Controllers
                 Tmb = Math.Round(tmb, 2),
                 TmbAjustada = Math.Round(tmbAjustada, 2),
                 Unidade = "kcal/dia",
-                NivelAtividade = req.NivelAtividade
+                req.NivelAtividade
             });
         }
     }
