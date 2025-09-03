@@ -13,4 +13,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aplication\Comands\User\Handlers\" />
+    <Folder Include="Aplication\Interfaces\" />
+    <Folder Include="Aplication\Services\" />
+    <Folder Include="Aplication\Queries\Handlers\" />
+    <Folder Include="Domain\Models\" />
+    <Folder Include="Domain\Enums\" />
+    <Folder Include="Infra.Data\Repositories\Interfaces\" />
+    <Folder Include="Infra.IoC\" />
+    <Folder Include="Infra.Shared\Validators\" />
+  </ItemGroup>
+
 </Project>
