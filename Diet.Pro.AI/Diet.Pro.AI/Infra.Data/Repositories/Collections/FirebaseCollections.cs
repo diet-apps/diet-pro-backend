@@ -2,6 +2,6 @@
 {
     public static class FirebaseCollections
     {
-        //Adicionar
+        public const string Users = "Users";
     }
 }

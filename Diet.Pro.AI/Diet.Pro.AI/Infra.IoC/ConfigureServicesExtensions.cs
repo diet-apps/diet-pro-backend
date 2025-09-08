@@ -15,7 +15,9 @@ namespace Diet.Pro.AI.Infra.IoC
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddScoped<IFirebaseService, FirebaseService>();
+            services.AddScoped<IUserFirebaseService, UserFirebaseService>();
             return services;
         }
 
