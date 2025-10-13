@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Aplication\Comands\User\Validators\" />
     <Folder Include="Aplication\Queries\Handlers\" />
     <Folder Include="Domain\Enums\" />
     <Folder Include="Infra.Shared\Validators\" />
