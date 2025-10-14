@@ -1,35 +1,41 @@
-# Stage 1: Build
+# Etapa 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
+# Definir diretório de trabalho para o build
 WORKDIR /src
 
-# Copiar o arquivo csproj e restaurar dependências (cache eficiente)
-COPY Diet.Pro.AI/Diet.Pro.AI.csproj Diet.Pro.AI/
+# Copiar o csproj para restaurar dependências primeiro (cache do Docker)
+COPY Diet.Pro.AI/Diet.Pro.AI/Diet.Pro.AI.csproj Diet.Pro.AI/Diet.Pro.AI/
 
-RUN dotnet restore "Diet.Pro.AI/Diet.Pro.AI.csproj"
+# Restaurar dependências
+RUN dotnet restore "Diet.Pro.AI/Diet.Pro.AI/Diet.Pro.AI.csproj"
 
-# Copiar o restante do código
+# Copiar o restante do código fonte
 COPY . .
 
-# Diretório para saída do build
-RUN mkdir -p /src/build_output && chmod -R 777 /src/build_output
+# Criar diretório de saída do build e garantir permissões
+RUN mkdir -p /app/build && chmod -R 777 /app/build
 
+# Definir diretório de trabalho para o projeto específico
 WORKDIR /src/Diet.Pro.AI
 
-# Buildar e enviar saída para build_output
-RUN dotnet build "Diet.Pro.AI.csproj" -c Release -o /src/build_output
+# Buildar o projeto, output para /app/build
+RUN dotnet build "Diet.Pro.AI.csproj" -c Release -o /app/build
 
-# Stage 2: Publish
+# Etapa 2: Publish (opcional, caso use publish)
 FROM build AS publish
 RUN dotnet publish "Diet.Pro.AI.csproj" -c Release -o /app/publish
 
-# Stage 3: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# Etapa 3: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 
 WORKDIR /app
 
+# Copiar os arquivos publicados para o container runtime
 COPY --from=publish /app/publish .
 
+# Expor porta (se aplicável)
 EXPOSE 80
 
+# Comando para rodar a aplicação
 ENTRYPOINT ["dotnet", "Diet.Pro.AI.dll"]
