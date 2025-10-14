@@ -1,31 +1,34 @@
-# Base runtime image
+# Base image para execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-# Build image
+# Fase de build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# ✅ Copia o .csproj com caminho relativo à raiz do repositório
+# Copia o .csproj com caminho relativo à raiz
 COPY ["Diet.Pro.AI/Diet.Pro.AI/Diet.Pro.AI.csproj", "Diet.Pro.AI/"]
 RUN dotnet restore "Diet.Pro.AI/Diet.Pro.AI.csproj"
 
-# ✅ Copia tudo
+# Copia tudo
 COPY . .
 
+# Muda para o diretório do projeto
 WORKDIR "/src/Diet.Pro.AI"
-RUN dotnet build "Diet.Pro.AI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Publish
+# ⚠️ Redireciona saída para /build (não /app/build)
+RUN dotnet build "Diet.Pro.AI.csproj" -c $BUILD_CONFIGURATION -o /build
+
+# Fase de publish
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Diet.Pro.AI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Diet.Pro.AI.csproj" -c $BUILD_CONFIGURATION -o /publish /p:UseAppHost=false
 
-# Final
+# Fase final
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /publish .
 ENTRYPOINT ["dotnet", "Diet.Pro.AI.dll"]
