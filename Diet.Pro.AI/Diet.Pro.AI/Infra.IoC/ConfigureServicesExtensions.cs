@@ -29,28 +29,41 @@ namespace Diet.Pro.AI.Infra.IoC
 
         public static IServiceCollection AddFirestoreDb(this IServiceCollection services, IConfiguration configuration)
         {
-            // 1. Pega o ProjectId do appsettings.json
+            // 1. Pega as configurações do appsettings.json ou variáveis de ambiente
             string projectId = configuration[FirebaseProjectId];
-            // 2. Pega a string JSON das credenciais da configuração (User Secrets ou Variáveis de Ambiente)
             string credentialsJson = configuration[FirebaseCredentials];
-            if (string.IsNullOrEmpty(credentialsJson))
+
+            if (string.IsNullOrWhiteSpace(projectId))
+                throw new InvalidOperationException($"O ProjectId do Firebase está ausente. Verifique a configuração '{FirebaseProjectId}'.");
+
+            if (string.IsNullOrWhiteSpace(credentialsJson))
+                throw new InvalidOperationException($"A credencial JSON do Firebase está ausente. Verifique a configuração '{FirebaseCredentials}'.");
+
+            try
             {
-                throw new InvalidOperationException(
-                    "A credencial JSON do Firebase não foi encontrada. " +
-                    "Verifique se 'Firebase:CredentialsJson' está configurado nos User Secrets ou variáveis de ambiente." +
-                    $"projectId: {projectId} | credentialsJson: {credentialsJson}");
+                // 2. Corrige as quebras de linha no JSON
+                credentialsJson = credentialsJson.Replace("\\n", "\n");
+
+                // 3. Cria as credenciais a partir do JSON corrigido
+                var credential = GoogleCredential.FromJson(credentialsJson);
+
+                // 4. Cria e registra o FirestoreDb
+                var firestoreDb = new FirestoreDbBuilder
+                {
+                    ProjectId = projectId,
+                    Credential = credential
+                }.Build();
+
+                services.AddSingleton(firestoreDb);
+
+                return services;
             }
-            // 3. Cria a credencial a partir da string JSON
-            var credential = GoogleCredential.FromJson(credentialsJson);
-            // 4. Cria e retorna a instância do FirestoreDb com a credencial explícita
-            var firestoreDb = new FirestoreDbBuilder
+            catch (Exception ex)
             {
-                ProjectId = projectId,
-                Credential = credential
-            }.Build();
-            services.AddSingleton(firestoreDb);
-            return services;
+                throw new InvalidOperationException("Erro ao carregar as credenciais do Firebase. Verifique se a variável 'Firebase__CredentialsJson' está corretamente formatada.", ex);
+            }
         }
+
         public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration)
         {
             FirebaseApp.Create(new AppOptions()
