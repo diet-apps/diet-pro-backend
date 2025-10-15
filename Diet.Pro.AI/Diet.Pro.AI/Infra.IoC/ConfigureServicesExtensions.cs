@@ -41,9 +41,11 @@ namespace Diet.Pro.AI.Infra.IoC
 
             try
             {
+                Console.WriteLine($"antes: {credentialsJson}");
                 // 2. Corrige as quebras de linha no JSON
                 credentialsJson = credentialsJson.Replace("\\n", "\n");
 
+                Console.WriteLine($"depois: {credentialsJson}");
                 // 3. Cria as credenciais a partir do JSON corrigido
                 var credential = GoogleCredential.FromJson(credentialsJson);
 
