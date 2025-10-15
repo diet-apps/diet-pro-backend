@@ -10,8 +10,8 @@ namespace Diet.Pro.AI.Infra.IoC
 {
     public static class ConfigureServicesExtensions
     {
-        private const string FirebaseProjectId = "Firebase:ProjectId";
-        private const string FirebaseCredentials = "Firebase:CredentialsJson";
+        private const string FirebaseProjectId = "FirebaseSettings:ProjectId";
+        private const string FirebaseCredentials = "FirebaseSettings:CredentialsJson";
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
@@ -37,7 +37,8 @@ namespace Diet.Pro.AI.Infra.IoC
             {
                 throw new InvalidOperationException(
                     "A credencial JSON do Firebase não foi encontrada. " +
-                    "Verifique se 'Firebase:CredentialsJson' está configurado nos User Secrets ou variáveis de ambiente.");
+                    "Verifique se 'Firebase:CredentialsJson' está configurado nos User Secrets ou variáveis de ambiente." +
+                    $"projectId: {projectId} | credentialsJson: {credentialsJson}");
             }
             // 3. Cria a credencial a partir da string JSON
             var credential = GoogleCredential.FromJson(credentialsJson);
