@@ -29,9 +29,8 @@ namespace Diet.Pro.AI.Infra.IoC
 
         public static IServiceCollection AddFirestoreDb(this IServiceCollection services, IConfiguration configuration)
         {
-            // 1. Pega as configurações do appsettings.json ou variáveis de ambiente
-            string projectId = configuration[FirebaseProjectId];
-            string credentialsJson = configuration[FirebaseCredentials];
+            var projectId = configuration[FirebaseProjectId];
+            var credentialsJson = configuration[FirebaseCredentials];
 
             if (string.IsNullOrWhiteSpace(projectId))
                 throw new InvalidOperationException($"O ProjectId do Firebase está ausente. Verifique a configuração '{FirebaseProjectId}'.");
@@ -41,15 +40,11 @@ namespace Diet.Pro.AI.Infra.IoC
 
             try
             {
-                Console.WriteLine($"antes: {credentialsJson}");
-                // 2. Corrige as quebras de linha no JSON
+                // Corrige as quebras de linha na chave privada
                 credentialsJson = credentialsJson.Replace("\\n", "\n");
 
-                Console.WriteLine($"depois: {credentialsJson}");
-                // 3. Cria as credenciais a partir do JSON corrigido
                 var credential = GoogleCredential.FromJson(credentialsJson);
 
-                // 4. Cria e registra o FirestoreDb
                 var firestoreDb = new FirestoreDbBuilder
                 {
                     ProjectId = projectId,
@@ -65,6 +60,7 @@ namespace Diet.Pro.AI.Infra.IoC
                 throw new InvalidOperationException("Erro ao carregar as credenciais do Firebase. Verifique se a variável 'Firebase__CredentialsJson' está corretamente formatada.", ex);
             }
         }
+
 
         public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration)
         {
