@@ -40,9 +40,6 @@ namespace Diet.Pro.AI.Infra.IoC
 
             try
             {
-                // Corrige as quebras de linha na chave privada
-                credentialsJson = credentialsJson.Replace("\\n", "\n");
-
                 var credential = GoogleCredential.FromJson(credentialsJson);
 
                 var firestoreDb = new FirestoreDbBuilder
