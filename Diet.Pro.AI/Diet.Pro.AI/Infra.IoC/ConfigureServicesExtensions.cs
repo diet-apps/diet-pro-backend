@@ -5,6 +5,7 @@ using Diet.Pro.AI.Infra.Data.Repositories;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
+using Newtonsoft.Json;
 
 namespace Diet.Pro.AI.Infra.IoC
 {
@@ -30,17 +31,32 @@ namespace Diet.Pro.AI.Infra.IoC
         public static IServiceCollection AddFirestoreDb(this IServiceCollection services, IConfiguration configuration)
         {
             var projectId = configuration[FirebaseProjectId];
-            var credentialsJson = configuration[FirebaseCredentials];
+            var credentialsRaw = configuration[FirebaseCredentials];
 
             if (string.IsNullOrWhiteSpace(projectId))
                 throw new InvalidOperationException($"O ProjectId do Firebase está ausente. Verifique a configuração '{FirebaseProjectId}'.");
 
-            if (string.IsNullOrWhiteSpace(credentialsJson))
+            if (string.IsNullOrWhiteSpace(credentialsRaw))
                 throw new InvalidOperationException($"A credencial JSON do Firebase está ausente. Verifique a configuração '{FirebaseCredentials}'.");
 
             try
             {
-                Console.WriteLine($"key: {credentialsJson}");
+                string credentialsJson;
+
+                // Heurística simples: se começa com "{" => provavelmente é JSON puro
+                if (credentialsRaw.TrimStart().StartsWith("{"))
+                {
+                    credentialsJson = credentialsRaw;
+                }
+                else
+                {
+                    // Se for uma string escapada, desserializa
+                    credentialsJson = JsonConvert.DeserializeObject<string>(credentialsRaw);
+                }
+
+                // Corrige quebras de linha no private_key
+                credentialsJson = credentialsJson.Replace("\\n", "\n");
+
                 var credential = GoogleCredential.FromJson(credentialsJson);
 
                 var firestoreDb = new FirestoreDbBuilder
@@ -55,9 +71,12 @@ namespace Diet.Pro.AI.Infra.IoC
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Erro ao carregar as credenciais do Firebase. Verifique se a variável 'Firebase__CredentialsJson' está corretamente formatada.", ex);
+                throw new InvalidOperationException(
+                    "Erro ao carregar as credenciais do Firebase. Verifique se a variável 'Firebase__CredentialsJson' está corretamente formatada.",
+                    ex);
             }
         }
+
 
 
         public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration)
