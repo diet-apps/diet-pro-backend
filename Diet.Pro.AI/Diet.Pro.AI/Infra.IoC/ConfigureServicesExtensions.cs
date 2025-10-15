@@ -10,8 +10,8 @@ namespace Diet.Pro.AI.Infra.IoC
 {
     public static class ConfigureServicesExtensions
     {
-        private const string FirebaseProjectId = "FirebaseSettings:ProjectId";
-        private const string FirebaseCredentials = "FirebaseSettings:CredentialsJson";
+        private const string FirebaseProjectId = "Firebase:ProjectId";
+        private const string FirebaseCredentials = "Firebase:CredentialsJson";
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
