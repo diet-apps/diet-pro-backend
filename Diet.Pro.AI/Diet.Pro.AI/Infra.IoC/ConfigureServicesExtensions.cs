@@ -40,6 +40,7 @@ namespace Diet.Pro.AI.Infra.IoC
 
             try
             {
+                Console.WriteLine($"key: {credentialsJson}");
                 var credential = GoogleCredential.FromJson(credentialsJson);
 
                 var firestoreDb = new FirestoreDbBuilder
