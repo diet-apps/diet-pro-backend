@@ -9,6 +9,12 @@ namespace Diet.Pro.AI.Domain.Models
         public string UserId { get; set; } = string.Empty;
 
         [FirestoreProperty]
+        public string Email { get; set; } = string.Empty;
+
+        [FirestoreProperty]
+        public string PasswordHash { get; set; } = string.Empty;
+
+        [FirestoreProperty]
         public UserData? UserData { get; set; }
 
         [FirestoreProperty]
