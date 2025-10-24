@@ -6,6 +6,7 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Newtonsoft.Json;
+using Diet.Pro.AI.Infrastructure.Auth;
 
 namespace Diet.Pro.AI.Infra.IoC
 {
@@ -19,6 +20,8 @@ namespace Diet.Pro.AI.Infra.IoC
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<IUserFirebaseService, UserFirebaseService>();
+            services.AddScoped<IAuthService, AuthService>();
+
             return services;
         }
 
@@ -76,8 +79,6 @@ namespace Diet.Pro.AI.Infra.IoC
                     ex);
             }
         }
-
-
 
         public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration)
         {

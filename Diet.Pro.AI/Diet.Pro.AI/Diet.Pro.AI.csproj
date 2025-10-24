@@ -9,16 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Divino.OperationResult" Version="4.0.1" />
     <PackageReference Include="FirebaseAdmin" Version="3.3.0" />
     <PackageReference Include="Google.Cloud.Firestore" Version="3.10.0" />
     <PackageReference Include="MediatR" Version="13.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Aplication\Comands\User\Validators\" />
+    <Folder Include="Aplication\NewFolder\" />
     <Folder Include="Aplication\Queries\Handlers\" />
     <Folder Include="Domain\Enums\" />
     <Folder Include="Infra.Shared\Validators\" />
