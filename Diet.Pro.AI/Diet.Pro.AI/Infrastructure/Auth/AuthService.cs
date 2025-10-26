@@ -19,7 +19,8 @@ namespace Diet.Pro.AI.Infrastructure.Auth
         public string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"]!);
+            var encripter = _config["Jwt:Secret"]!;
+            var key = Encoding.ASCII.GetBytes(encripter);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

@@ -49,17 +49,25 @@ namespace Diet.Pro.AI.Aplication.Services
         }
         public async Task<Result<User>> GetUserByEmailAsync(string email)
         {
-            var usersRef = _firestoreDb.Collection(FirebaseCollections.Users);
-            var query = usersRef.WhereEqualTo("Email", email);
-            var snapshot = await query.GetSnapshotAsync();
+            try
+            {
+                var usersRef = _firestoreDb.Collection(FirebaseCollections.Users);
+                var query = usersRef.WhereEqualTo("Email", email);
+                var snapshot = await query.GetSnapshotAsync();
 
-            if (snapshot.Documents.Count == 0)
-                return new Exception("Usuário não encontrado");
+                if (snapshot.Documents.Count == 0)
+                    return new Exception("Usuário não encontrado");
 
-            var doc = snapshot.Documents.First();
-            var user = doc.ConvertTo<User>();
-            return user;
+                var doc = snapshot.Documents.First();
+                var user = doc.ConvertTo<User>();
+                return user;
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Erro ao acessar Firestore. Verifique credenciais e permissões. Erro: {ex}");
+                throw;
+            }
         }
-
     }
 }
