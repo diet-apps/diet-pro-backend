@@ -46,7 +46,6 @@ namespace Diet.Pro.AI.Infra.IoC
             {
                 string credentialsJson = GetCredentialsJson(credentialsRaw);
 
-                // Corrige quebras de linha no private_key
                 credentialsJson = credentialsJson.Replace("\\n", "\n");
 
                 var credential = GoogleCredential.FromJson(credentialsJson);
@@ -71,12 +70,6 @@ namespace Diet.Pro.AI.Infra.IoC
 
         public static IServiceCollection AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration)
         {
-            //string credentialsJson = GetCredentialsJson(configuration[FirebaseCredentials]);
-            //FirebaseApp.Create(new AppOptions()
-            //{
-            //    Credential = GoogleCredential.FromJson(credentialsJson),
-            //});
-            //return services;
             var credentialsRaw = configuration[FirebaseCredentials];
 
             if (string.IsNullOrWhiteSpace(credentialsRaw))
@@ -84,7 +77,6 @@ namespace Diet.Pro.AI.Infra.IoC
 
             string credentialsJson = GetCredentialsJson(credentialsRaw);
 
-            // Corrige quebras de linha no private_key
             credentialsJson = credentialsJson.Replace("\\n", "\n");
 
             FirebaseApp.Create(new AppOptions()
@@ -97,24 +89,14 @@ namespace Diet.Pro.AI.Infra.IoC
 
         private static string GetCredentialsJson(string? credentialsRaw)
         {
-            //// Heurística simples: se começa com "{" => provavelmente é JSON puro
-            //if (credentialsRaw!.TrimStart().StartsWith("{"))
-            //{
-            //    return credentialsRaw;
-            //}
-
-            //// Se for uma string escapada, desserializa
-            //return JsonConvert.DeserializeObject<string>(credentialsRaw)!;
             if (string.IsNullOrWhiteSpace(credentialsRaw))
                 throw new InvalidOperationException("As credenciais do Firebase não foram fornecidas.");
 
-            // Se começa com "{" → é JSON puro
             if (credentialsRaw.TrimStart().StartsWith("{"))
             {
                 return credentialsRaw;
             }
 
-            // Caso contrário → é uma string JSON escapada
             return JsonConvert.DeserializeObject<string>(credentialsRaw)!;
         }
     }
