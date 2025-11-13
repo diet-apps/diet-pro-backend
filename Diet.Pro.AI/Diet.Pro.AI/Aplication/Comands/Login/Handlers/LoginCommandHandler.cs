@@ -1,12 +1,13 @@
 ﻿using Diet.Pro.AI.Aplication.Common.Dtos;
 using Diet.Pro.AI.Aplication.Interfaces;
 using Diet.Pro.AI.Aplication.Services.Cryptography;
+using Diet.Pro.AI.Infra.Shared.Responses;
 using Diet.Pro.AI.Shared.Exceptions;
 using MediatR;
 
 namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
 {
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, ResponseRegisteredUser>
     {
         private readonly IAuthService _authService;
         private readonly IUserFirebaseService _userFirebaseService;
@@ -19,7 +20,7 @@ namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
             _passwordEncripter = passwordEncripter;
         }
 
-        public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseRegisteredUser> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var encriptedPassword = _passwordEncripter.Encript(request.Request.Password);
 
@@ -30,12 +31,14 @@ namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
 
             var token = _authService.GenerateJwtToken(user);
 
-            return new LoginResponse
+            return new ResponseRegisteredUser
             {
-                Token = token,
-                UserId = user.UserId,
-                Email = user.Email,
-                Name = user.UserData?.Name ?? string.Empty
+                Name = user.UserData?.Name ?? string.Empty,
+                Tokens = new ResponseTokens
+                {
+                    AccessToken = token
+                }
+               
             };
         }
     }
