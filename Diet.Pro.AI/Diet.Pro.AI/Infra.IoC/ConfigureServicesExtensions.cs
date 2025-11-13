@@ -7,6 +7,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore;
 using Newtonsoft.Json;
 using Diet.Pro.AI.Infrastructure.Auth;
+using Diet.Pro.AI.Aplication.Services.Cryptography;
+using Microsoft.Extensions.Configuration;
 
 namespace Diet.Pro.AI.Infra.IoC
 {
@@ -15,8 +17,10 @@ namespace Diet.Pro.AI.Infra.IoC
         private const string FirebaseProjectId = "FirebaseSettings:ProjectId";
         private const string FirebaseCredentials = "FirebaseSettings:CredentialsJson";
 
-        public static IServiceCollection AddServices(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
+            AddPasswordEncripter(services, configuration);
+
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddScoped<IFirebaseService, FirebaseService>();
             services.AddScoped<IUserFirebaseService, UserFirebaseService>();
@@ -85,6 +89,13 @@ namespace Diet.Pro.AI.Infra.IoC
             });
 
             return services;
+        }
+
+        private static void AddPasswordEncripter(IServiceCollection services, IConfiguration configuration)
+        {
+            var additionalKey = configuration.GetValue<string>("Settings:Password:AdditionalKey");
+
+            services.AddScoped(option => new PasswordEncripter(additionalKey!));
         }
 
         private static string GetCredentialsJson(string? credentialsRaw)

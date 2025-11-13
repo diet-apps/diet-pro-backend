@@ -1,5 +1,7 @@
 ﻿using Diet.Pro.AI.Aplication.Common.Dtos;
 using Diet.Pro.AI.Aplication.Interfaces;
+using Diet.Pro.AI.Aplication.Services.Cryptography;
+using Diet.Pro.AI.Shared.Exceptions;
 using MediatR;
 
 namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
@@ -8,19 +10,23 @@ namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
     {
         private readonly IAuthService _authService;
         private readonly IUserFirebaseService _userFirebaseService;
+        private readonly PasswordEncripter _passwordEncripter;
 
-        public LoginCommandHandler(IAuthService authService, IUserFirebaseService userFirebaseService)
+        public LoginCommandHandler(IAuthService authService, IUserFirebaseService userFirebaseService, PasswordEncripter passwordEncripter)
         {
             _authService = authService;
             _userFirebaseService = userFirebaseService;
+            _passwordEncripter = passwordEncripter;
         }
 
         public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var (_, user) = await _userFirebaseService.GetUserByEmailAsync(request.Request.Email);
+            var encriptedPassword = _passwordEncripter.Encript(request.Request.Password);
 
-            if (user is null || !_authService.VerifyPassword(request.Request.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Credenciais inválidas.");
+            var (_, user) = await _userFirebaseService.GetUserByEmailAndPassword(request.Request.Email, encriptedPassword);
+
+            if (user is null)
+                throw new InvalidLoginException();
 
             var token = _authService.GenerateJwtToken(user);
 

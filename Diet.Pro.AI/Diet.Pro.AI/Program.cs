@@ -1,3 +1,4 @@
+using Diet.Pro.AI.Api.Filters;
 using Diet.Pro.AI.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddServices();
+builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
+
+builder.Services.AddServices(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddFirestoreDb(builder.Configuration);
 builder.Services.AddFirebaseAdmin(builder.Configuration);
