@@ -5,7 +5,7 @@ using OperationResult;
 
 namespace Diet.Pro.AI.Aplication.Comands
 {
-    public class CreateUserPhysicalDataCommand : IRequest<Result<User>>
+    public class CreateUserPhysicalDataCommand : IRequest<Result<Domain.Models.User>>
     {
         public string UserId { get; set; }
         public UserPhysicalDataInputModel InputModel { get; set; }

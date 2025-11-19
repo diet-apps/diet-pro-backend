@@ -28,7 +28,15 @@ namespace Diet.Pro.AI.Api.Filters
                 var exception = context.Exception as ErrorOnValidationException;
 
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Result = new BadRequestObjectResult(new ResponseErrorJson(exception!.Message));
+
+                if (!string.IsNullOrEmpty(exception!.Message))
+                {
+                    context.Result = new BadRequestObjectResult(new ResponseErrorJson(exception.Message));
+                }
+                else
+                {
+                    context.Result = new BadRequestObjectResult(new ResponseErrorJson(exception.ErrorMessages));
+                }
             }
         }
 

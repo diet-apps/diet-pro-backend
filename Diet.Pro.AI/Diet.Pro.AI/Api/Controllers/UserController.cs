@@ -16,10 +16,7 @@ namespace Diet.Pro.AI.Api.Controllers
         {
             var result = await _mediator.Send(new CreateUserCommand(inputModel));
 
-            if (!result.IsSuccess)
-                return BadRequest(result.Exception);
-           
-            return Ok(result.Value);
+            return Created(string.Empty, result.Value);
         }
 
         [HttpPost("{userId}/physical-data")]

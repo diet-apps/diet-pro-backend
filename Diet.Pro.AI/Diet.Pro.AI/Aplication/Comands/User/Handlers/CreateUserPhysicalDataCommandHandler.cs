@@ -5,16 +5,16 @@ using OperationResult;
 
 namespace Diet.Pro.AI.Aplication.Comands
 {
-    public class CreateUserPhysicalDataCommandHandler : IRequestHandler<CreateUserPhysicalDataCommand, Result<User>>
+    public class CreateUserPhysicalDataCommandHandler : IRequestHandler<CreateUserPhysicalDataCommand, Result<Domain.Models.User>>
     {
         private readonly IUserFirebaseService _userFirebaseService;
 
         public CreateUserPhysicalDataCommandHandler(IUserFirebaseService userFirebaseService) 
             => _userFirebaseService = userFirebaseService;
 
-        public async Task<Result<User>> Handle(CreateUserPhysicalDataCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Domain.Models.User>> Handle(CreateUserPhysicalDataCommand request, CancellationToken cancellationToken)
         {
-            var user = new User
+            var user = new Domain.Models.User
             {
                 UserId = request.UserId,
                 UserPhysicalData = new UserPhysicalData
