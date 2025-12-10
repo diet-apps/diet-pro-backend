@@ -1,4 +1,5 @@
 ﻿using Diet.Pro.AI.Aplication.Comands.User.Validators;
+using Diet.Pro.AI.Aplication.Events.User.Register;
 using Diet.Pro.AI.Aplication.Interfaces;
 using Diet.Pro.AI.Aplication.Services.Cryptography;
 using Diet.Pro.AI.Domain.Models;
@@ -12,11 +13,13 @@ namespace Diet.Pro.AI.Aplication.Comands
     {
         private readonly IUserFirebaseService _userFirebaseService;
         private readonly PasswordEncripter _passwordEncripter;
+        private readonly IMediator _mediator;
 
-        public CreateUserCommandHandler(IUserFirebaseService userFirebaseService, PasswordEncripter passwordEncripter)
+        public CreateUserCommandHandler(IUserFirebaseService userFirebaseService, PasswordEncripter passwordEncripter, IMediator mediator)
         {
             _userFirebaseService = userFirebaseService;
             _passwordEncripter = passwordEncripter;
+            _mediator = mediator;
         }
 
         public async Task<Result<Domain.Models.User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -39,6 +42,11 @@ namespace Diet.Pro.AI.Aplication.Comands
             };
 
             var userCreated = await _userFirebaseService.CreateUserDataAsync(user);
+
+            var (name, email) = GetUserInfoForSendEmail(userCreated.Value!);
+
+            await _mediator.Publish(new UserRegisteredEvent(name, email), cancellationToken);
+
             return userCreated!;
         }
         private void Validate(CreateUserCommand request)
@@ -58,5 +66,7 @@ namespace Diet.Pro.AI.Aplication.Comands
                 throw new ErrorOnValidationException(errorMessages);
             }
         }
+
+        private (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) => (user.UserData!.Name, user.Email);
     }
 }
