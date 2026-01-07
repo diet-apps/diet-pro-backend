@@ -47,6 +47,7 @@ namespace Diet.Pro.AI.Aplication.Services
             var user = snapshot.ConvertTo<User>();
             return user;
         }
+
         public async Task<Result<User>> GetUserByEmailAndPassword(string email, string password)
         {
             var usersRef = _firestoreDb.Collection(FirebaseCollections.Users);
@@ -63,6 +64,16 @@ namespace Diet.Pro.AI.Aplication.Services
                 return default;
 
             return user;
+        }
+
+        public async Task<bool> ExistActiveUserWithEmail(string email)
+        {
+            var usersRef = _firestoreDb.Collection(FirebaseCollections.Users);
+            var snapshot = await usersRef
+                 .WhereEqualTo("Email", email)
+                 .GetSnapshotAsync();
+
+            return snapshot.Any();
         }
     }
 }

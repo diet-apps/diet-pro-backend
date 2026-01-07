@@ -9,5 +9,6 @@ namespace Diet.Pro.AI.Aplication.Interfaces
         Task<Result<User>> CreateUserPhysicalDataAsync(User user);
         Task<Result<User>> GetUserByIdAsync(string userId);      
         Task<Result<User>> GetUserByEmailAndPassword(string email, string password);
+        Task<bool> ExistActiveUserWithEmail(string email);
     }
 }

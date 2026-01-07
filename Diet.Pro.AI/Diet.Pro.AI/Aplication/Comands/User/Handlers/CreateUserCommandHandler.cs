@@ -24,7 +24,7 @@ namespace Diet.Pro.AI.Aplication.Comands
 
         public async Task<Result<Domain.Models.User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            Validate(request);
+            await Validate(request);
 
             var userId = Guid.NewGuid().ToString();
 
@@ -49,16 +49,15 @@ namespace Diet.Pro.AI.Aplication.Comands
 
             return userCreated!;
         }
-        private void Validate(CreateUserCommand request)
+        private async Task Validate(CreateUserCommand request)
         {
             var validator = new CreateUserCommandValidator();
 
             var result = validator.Validate(request);
 
-            //criar validação para tratr email existente!
-            //var emailExist = await _userReadOnlyRepository.ExistActiveUserWithEmail(request.Email);
-            //if (emailExist)
-            //    result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.EMAIL_ALREADY_REGISTRED));
+            var emailExist = await _userFirebaseService.ExistActiveUserWithEmail(request.InputModel.Email);
+            if (emailExist)
+                result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, "Email já cadastrado."));
 
             if (result.IsValid is false)
             {
@@ -67,6 +66,6 @@ namespace Diet.Pro.AI.Aplication.Comands
             }
         }
 
-        private (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) => (user.UserData!.Name, user.Email);
+        private static (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) => (user.UserData!.Name, user.Email);
     }
 }
