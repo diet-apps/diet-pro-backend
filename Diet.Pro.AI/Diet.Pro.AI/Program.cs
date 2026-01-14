@@ -23,6 +23,8 @@ builder.Services.AddRepositories();
 builder.Services.AddFirestoreDb(builder.Configuration);
 builder.Services.AddFirebaseAdmin(builder.Configuration);
 
+builder.Services.AddRouting(optinos => optinos.LowercaseUrls = true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
