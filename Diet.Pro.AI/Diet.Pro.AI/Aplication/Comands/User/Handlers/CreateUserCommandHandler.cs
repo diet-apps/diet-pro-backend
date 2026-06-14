@@ -47,7 +47,7 @@ namespace Diet.Pro.AI.Aplication.Comands
 
             await _mediator.Publish(new UserRegisteredEvent(name, email), cancellationToken);
 
-            return userCreated!;
+            return userCreated;
         }
         private async Task Validate(CreateUserCommand request)
         {
@@ -66,6 +66,7 @@ namespace Diet.Pro.AI.Aplication.Comands
             }
         }
 
-        private static (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) => (user.UserData!.Name, user.Email);
+        private static (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) 
+            => (user.UserData!.Name, user.Email);
     }
 }
