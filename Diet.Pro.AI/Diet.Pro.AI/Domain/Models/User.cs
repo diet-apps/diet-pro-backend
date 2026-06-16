@@ -12,6 +12,9 @@ namespace Diet.Pro.AI.Domain.Models
         public string Email { get; set; } = string.Empty;
 
         [FirestoreProperty]
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+
+        [FirestoreProperty]
         public string PasswordHash { get; set; } = string.Empty;
 
         [FirestoreProperty]
