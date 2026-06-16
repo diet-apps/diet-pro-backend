@@ -24,6 +24,7 @@
     <Folder Include="Aplication\Queries\Handlers\" />
     <Folder Include="Domain\Enums\" />
     <Folder Include="Infra.Shared\Validators\" />
+    <Folder Include="Shared\Resources\EmailTemplates\" />
   </ItemGroup>
 
 </Project>
