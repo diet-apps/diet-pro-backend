@@ -1,6 +1,7 @@
 ﻿using Diet.Pro.AI.Aplication.Interfaces;
 using Diet.Pro.AI.Domain.Models;
 using Diet.Pro.AI.Infra.Data.Repositories.Collections;
+using Diet.Pro.AI.Shared.Exceptions;
 using Google.Cloud.Firestore;
 using OperationResult;
 
@@ -55,7 +56,7 @@ namespace Diet.Pro.AI.Aplication.Services
             var snapshot = await query.GetSnapshotAsync();
 
             if (snapshot.Documents.Count == 0)
-                return default;
+                return new InvalidLoginException();
 
             var doc = snapshot.Documents.First();
             var user = doc.ConvertTo<User>();
