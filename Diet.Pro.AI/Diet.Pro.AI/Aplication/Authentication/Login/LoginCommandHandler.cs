@@ -1,13 +1,11 @@
-﻿using Diet.Pro.AI.Aplication.Common.Dtos;
-using Diet.Pro.AI.Aplication.Interfaces;
+﻿using Diet.Pro.AI.Aplication.Interfaces;
 using Diet.Pro.AI.Aplication.Services.Cryptography;
-using Diet.Pro.AI.Infra.Shared.Responses;
 using Diet.Pro.AI.Shared.Exceptions;
 using MediatR;
 
-namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
+namespace Diet.Pro.AI.Aplication.Authentication.Login
 {
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, ResponseRegisteredUser>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
     {
         private readonly IAuthService _authService;
         private readonly IUserFirebaseService _userFirebaseService;
@@ -20,7 +18,7 @@ namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
             _passwordEncripter = passwordEncripter;
         }
 
-        public async Task<ResponseRegisteredUser> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             var encriptedPassword = _passwordEncripter.Encript(request.Request.Password);
 
@@ -31,14 +29,14 @@ namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
 
             var token = _authService.GenerateJwtToken(user);
 
-            return new ResponseRegisteredUser
+            return new LoginResponse
             {
                 Name = user.UserData?.Name ?? string.Empty,
-                Tokens = new ResponseTokens
-                {
-                    AccessToken = token
-                }
-               
+                UserId = user.UserId,
+                Email = user.Email ?? string.Empty,
+                AccessToken = token.AccessToken,
+                ExpiresInSeconds = (int)Math.Max(0, (token.ExpiresAtUtc - DateTime.UtcNow).TotalSeconds),
+                TokenType = token.TokenType,
             };
         }
     }

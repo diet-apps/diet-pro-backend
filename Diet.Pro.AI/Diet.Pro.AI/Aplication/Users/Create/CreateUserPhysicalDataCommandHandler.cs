@@ -1,20 +1,20 @@
 ﻿using Diet.Pro.AI.Aplication.Interfaces;
-using Diet.Pro.AI.Domain.Models;
+using Diet.Pro.AI.Domain.Entities;
 using MediatR;
 using OperationResult;
 
-namespace Diet.Pro.AI.Aplication.Comands
+namespace Diet.Pro.AI.Aplication.Users.Create
 {
-    public class CreateUserPhysicalDataCommandHandler : IRequestHandler<CreateUserPhysicalDataCommand, Result<Domain.Models.User>>
+    public class CreateUserPhysicalDataCommandHandler : IRequestHandler<CreateUserPhysicalDataCommand, Result<User>>
     {
         private readonly IUserFirebaseService _userFirebaseService;
 
         public CreateUserPhysicalDataCommandHandler(IUserFirebaseService userFirebaseService) 
             => _userFirebaseService = userFirebaseService;
 
-        public async Task<Result<Domain.Models.User>> Handle(CreateUserPhysicalDataCommand request, CancellationToken cancellationToken)
+        public async Task<Result<User>> Handle(CreateUserPhysicalDataCommand request, CancellationToken cancellationToken)
         {
-            var user = new Domain.Models.User
+            var user = new User
             {
                 UserId = request.UserId,
                 UserPhysicalData = new UserPhysicalData

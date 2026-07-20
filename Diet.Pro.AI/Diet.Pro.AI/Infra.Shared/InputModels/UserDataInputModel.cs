@@ -1,7 +1,4 @@
-﻿using Diet.Pro.AI.Domain.Models;
-using Google.Cloud.Firestore;
-
-namespace Diet.Pro.AI.Infra.Shared.InputModels
+﻿namespace Diet.Pro.AI.Infra.Shared.InputModels
 {
     public class UserDataInputModel
     {

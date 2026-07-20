@@ -1,7 +1,8 @@
-﻿using Diet.Pro.AI.Aplication.Comands.Login.Handlers;
+﻿using Diet.Pro.AI.Aplication.Authentication.Login;
 using Diet.Pro.AI.Aplication.Common.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using LoginResponse = Diet.Pro.AI.Aplication.Authentication.Login.LoginResponse;
 
 namespace Diet.Pro.AI.Api.Controllers
 {

@@ -1,15 +1,14 @@
-﻿using Diet.Pro.AI.Aplication.Comands.User.Validators;
-using Diet.Pro.AI.Aplication.Events.User.Register;
+﻿using Diet.Pro.AI.Aplication.Events.User.Register;
 using Diet.Pro.AI.Aplication.Interfaces;
 using Diet.Pro.AI.Aplication.Services.Cryptography;
-using Diet.Pro.AI.Domain.Models;
+using Diet.Pro.AI.Domain.Entities;
 using Diet.Pro.AI.Shared.Exceptions;
 using MediatR;
 using OperationResult;
 
-namespace Diet.Pro.AI.Aplication.Comands
+namespace Diet.Pro.AI.Aplication.Users.Create
 {
-    public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Domain.Models.User>>
+    public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<CreateUserCommandResponse>>
     {
         private readonly IUserFirebaseService _userFirebaseService;
         private readonly PasswordEncripter _passwordEncripter;
@@ -22,13 +21,13 @@ namespace Diet.Pro.AI.Aplication.Comands
             _mediator = mediator;
         }
 
-        public async Task<Result<Domain.Models.User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<CreateUserCommandResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             await Validate(request);
 
             var userId = Guid.NewGuid().ToString();
 
-            var user = new Domain.Models.User
+            var user = new User
             {
                 UserId = userId,
                 Email = request.InputModel.Email,
@@ -41,13 +40,15 @@ namespace Diet.Pro.AI.Aplication.Comands
                 }
             };
 
-            var userCreated = await _userFirebaseService.CreateUserDataAsync(user);
+            var (_, userCreated) = await _userFirebaseService.CreateUserDataAsync(user);
 
-            var (name, email) = GetUserInfoForSendEmail(userCreated.Value!);
+            var (name, email) = GetUserInfoForSendEmail(userCreated!);
 
             await _mediator.Publish(new UserRegisteredEvent(name, email), cancellationToken);
 
-            return userCreated;
+            // depois de criar/obter o usuário:
+            CreateUserCommandResponse response = userCreated!;
+            return response;
         }
         private async Task Validate(CreateUserCommand request)
         {
@@ -66,7 +67,7 @@ namespace Diet.Pro.AI.Aplication.Comands
             }
         }
 
-        private static (string name, string email) GetUserInfoForSendEmail(Domain.Models.User user) 
+        private static (string name, string email) GetUserInfoForSendEmail(User user) 
             => (user.UserData!.Name, user.Email);
     }
 }

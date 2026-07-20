@@ -1,10 +1,10 @@
 ﻿using Diet.Pro.AI.Aplication.Common.Dtos;
-using Diet.Pro.AI.Infra.Shared.Responses;
 using MediatR;
+using LoginResponse = Diet.Pro.AI.Aplication.Authentication.Login.LoginResponse;
 
-namespace Diet.Pro.AI.Aplication.Comands.Login.Handlers
+namespace Diet.Pro.AI.Aplication.Authentication.Login
 {
-    public class LoginCommand : IRequest<ResponseRegisteredUser>
+    public class LoginCommand : IRequest<LoginResponse>
     {
         public LoginRequest Request { get; }
 

@@ -1,4 +1,4 @@
-﻿using Diet.Pro.AI.Aplication.Comands;
+﻿using Diet.Pro.AI.Aplication.Users.Create;
 using Diet.Pro.AI.Infra.Shared.InputModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +12,7 @@ namespace Diet.Pro.AI.Api.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpPost]
+        [ProducesResponseType(typeof(CreateUserCommandResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateUser([FromBody] UserDataInputModel inputModel)
         {
             var result = await _mediator.Send(new CreateUserCommand(inputModel));

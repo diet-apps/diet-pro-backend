@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Diet.Pro.AI.Aplication.Comands.User.Validators
+namespace Diet.Pro.AI.Aplication.Users.Create
 {
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {

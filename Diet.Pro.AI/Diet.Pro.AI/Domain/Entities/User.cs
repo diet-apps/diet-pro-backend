@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace Diet.Pro.AI.Domain.Models
+namespace Diet.Pro.AI.Domain.Entities
 {
     [FirestoreData]
     public class User

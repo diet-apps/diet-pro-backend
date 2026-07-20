@@ -1,4 +1,4 @@
-﻿using Diet.Pro.AI.Domain.Models;
+﻿using Diet.Pro.AI.Domain.Entities;
 using OperationResult;
 
 namespace Diet.Pro.AI.Aplication.Interfaces
